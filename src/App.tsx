@@ -138,8 +138,8 @@ export const App: React.FC = () => {
       completedTodos.map(completedTodo =>
         deleteTodos(completedTodo.id)
           .then(() => {
-            setTodos(current =>
-              current.filter(todo => todo.id !== completedTodo.id),
+            setTodos(currentTodos =>
+              currentTodos.filter(todo => todo.id !== completedTodo.id),
             );
           })
           .catch(() => {
