@@ -8,8 +8,8 @@ import { Todo } from './types/Todo';
 import { TodoList } from './components/TodoList';
 import { Footer } from './components/Footer';
 import cn from 'classnames';
-import { FilterField } from './types/enums/FilterField';
 import { Selected } from './types/enums/Selected';
+import { ErrorMessage } from './types/enums/ErrorMessage';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -19,8 +19,6 @@ export const App: React.FC = () => {
   const [todoLoading, setTodoLoading] = useState(false);
   const [todoIdLoading, setTodoIdLoading] = useState<number | null>(null);
 
-  const [filter, setFilter] = useState<FilterField>(FilterField.all);
-
   const [todosIdsLoading, setTodosIdsLoading] = useState<number[]>([]);
 
   const [visibleTodos, setVisibleTodos] = useState<Todo[]>([]);
@@ -28,18 +26,18 @@ export const App: React.FC = () => {
   useEffect(() => {
     setVisibleTodos(
       todos.filter(todo => {
-        if (filter === FilterField.completed) {
+        if (selected === Selected.completed) {
           return todo.completed;
         }
 
-        if (filter === FilterField.active) {
+        if (selected === Selected.active) {
           return !todo.completed;
         }
 
         return todos;
       }),
     );
-  }, [filter, todos]);
+  }, [selected, todos]);
 
   // const filteredTodos = todos.filter(todo => {
   //   if (filter === FilterField.completed) {
@@ -53,42 +51,41 @@ export const App: React.FC = () => {
   //   return todos;
   // });
 
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState<ErrorMessage>(
+    ErrorMessage.noErrors,
+  );
 
   useEffect(() => {
-    setErrorMessage('');
+    setErrorMessage(ErrorMessage.noErrors);
 
     getTodos()
       .then(setTodos)
-      .catch(() => setErrorMessage('Unable to load todos'));
+      .catch(() => setErrorMessage(ErrorMessage.loadError));
   }, []);
 
   useEffect(() => {
     if (errorMessage) {
       setTimeout(() => {
-        setErrorMessage('');
+        setErrorMessage(ErrorMessage.noErrors);
       }, 3000);
     }
   }, [errorMessage]);
 
   const handleActiveTodosButton = () => {
     setSelected(Selected.active);
-    setFilter(FilterField.active);
   };
 
   const handleCompletedTodosButton = () => {
     setSelected(Selected.completed);
-    setFilter(FilterField.completed);
   };
 
   const handleAllTodosButton = () => {
     setSelected(Selected.all);
-    setFilter(FilterField.all);
   };
 
   const addTodo = (title: string) => {
     setTodoLoading(true);
-    setErrorMessage('');
+    setErrorMessage(ErrorMessage.noErrors);
     setTempTodo({
       id: 0,
       title: title,
@@ -99,7 +96,7 @@ export const App: React.FC = () => {
     return addTodos(title)
       .then(newTodo => setTodos(currentTodos => [...currentTodos, newTodo]))
       .catch(error => {
-        setErrorMessage('Unable to add a todo');
+        setErrorMessage(ErrorMessage.addError);
         throw error;
       })
       .finally(() => {
@@ -118,7 +115,7 @@ export const App: React.FC = () => {
         });
       })
       .catch(error => {
-        setErrorMessage('Unable to delete a todo');
+        setErrorMessage(ErrorMessage.deleteError);
         setTodos(todos);
         throw error;
       })
@@ -143,7 +140,7 @@ export const App: React.FC = () => {
             );
           })
           .catch(() => {
-            setErrorMessage('Unable to delete a todo');
+            setErrorMessage(ErrorMessage.deleteError);
           }),
       ),
     ).finally(() => setTodosIdsLoading([]));
@@ -199,7 +196,7 @@ export const App: React.FC = () => {
         )}
       >
         <button
-          onClick={() => setErrorMessage('')}
+          onClick={() => setErrorMessage(ErrorMessage.noErrors)}
           data-cy="HideErrorButton"
           type="button"
           className="delete"

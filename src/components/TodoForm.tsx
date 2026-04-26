@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { ErrorMessage } from '../types/enums/ErrorMessage';
 
 type Props = {
   onAdd: (arg0: string) => Promise<void>;
-  setError: React.Dispatch<React.SetStateAction<string>>;
+  setError: React.Dispatch<React.SetStateAction<ErrorMessage>>;
 };
 
 export const TodoForm: React.FC<Props> = ({ onAdd, setError }) => {
@@ -28,7 +29,7 @@ export const TodoForm: React.FC<Props> = ({ onAdd, setError }) => {
     if (normalizedTitle.length === 0) {
       setIsDisabled(false);
 
-      return setError('Title should not be empty');
+      return setError(ErrorMessage.emptyTitle);
     }
 
     return onAdd(normalizedTitle)
