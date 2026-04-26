@@ -135,12 +135,10 @@ export const App: React.FC = () => {
     setTodosIdsLoading(completedTodos.map(todo => todo.id));
 
     return Promise.all(
-      completedTodos.map(completedTodo =>
-        deleteTodos(completedTodo.id)
+      completedTodos.map(todo =>
+        deleteTodos(todo.id)
           .then(() => {
-            setTodos(currentTodos =>
-              currentTodos.filter(todo => todo.id !== completedTodo.id),
-            );
+            setTodos(current => current.filter(t => t.id !== todo.id));
           })
           .catch(() => {
             setErrorMessage('Unable to delete a todo');

@@ -1,15 +1,8 @@
 {
   "extends": "@mate-academy/students-ts-config",
-<<<<<<< HEAD
   "include": ["src"],
   "compilerOptions": {
     "jsx": "react",
-=======
-  "include": [
-    "src"
-  ],
-  "compilerOptions": {
->>>>>>> b66c25c0f89c8fb54c3232408b23595ac2adcb32
     "sourceMap": false,
     "types": ["node", "cypress"]
   }
