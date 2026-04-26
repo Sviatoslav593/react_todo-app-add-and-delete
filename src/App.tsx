@@ -146,11 +146,7 @@ export const App: React.FC = () => {
             setErrorMessage('Unable to delete a todo');
           }),
       ),
-    )
-      .catch(() => {
-        setErrorMessage('Unable to delete a todo');
-      })
-      .finally(() => setTodosIdsLoading([]));
+    ).finally(() => setTodosIdsLoading([]));
   };
 
   if (!USER_ID) {
